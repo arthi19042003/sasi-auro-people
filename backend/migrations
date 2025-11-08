@@ -1,0 +1,99 @@
+-- users
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(100),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL DEFAULT 'employee',
+  status VARCHAR(20) DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
+
+-- employees
+CREATE TABLE IF NOT EXISTS employees (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE SET NULL,
+  employee_id VARCHAR(50) UNIQUE,
+  first_name VARCHAR(100),
+  last_name VARCHAR(100),
+  phone VARCHAR(50),
+  department VARCHAR(100),
+  job_title VARCHAR(100),
+  manager_id INT,
+  employment_type VARCHAR(50),
+  hourly_rate NUMERIC(10,2),
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
+
+-- projects
+CREATE TABLE IF NOT EXISTS projects (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  client_name VARCHAR(255),
+  start_date DATE,
+  end_date DATE,
+  budget NUMERIC,
+  is_billable BOOLEAN DEFAULT TRUE,
+  status VARCHAR(50) DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- time_entries
+CREATE TABLE IF NOT EXISTS time_entries (
+  id SERIAL PRIMARY KEY,
+  employee_id INT REFERENCES employees(id) ON DELETE CASCADE,
+  date DATE NOT NULL,
+  start_time TIMESTAMP,
+  end_time TIMESTAMP,
+  hours_worked NUMERIC(6,2),
+  break_time NUMERIC(5,2),
+  project_id INT REFERENCES projects(id),
+  task VARCHAR(255),
+  notes TEXT,
+  status VARCHAR(50) DEFAULT 'draft',
+  submitted_at TIMESTAMP,
+  approved_at TIMESTAMP,
+  approved_by INT,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- attendance
+CREATE TABLE IF NOT EXISTS attendance (
+  id SERIAL PRIMARY KEY,
+  employee_id INT REFERENCES employees(id) ON DELETE CASCADE,
+  date DATE NOT NULL,
+  check_in_time TIMESTAMP,
+  check_out_time TIMESTAMP,
+  status VARCHAR(50),
+  location_lat NUMERIC,
+  location_lng NUMERIC,
+  device_info JSONB,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- leaves
+CREATE TABLE IF NOT EXISTS leaves (
+  id SERIAL PRIMARY KEY,
+  employee_id INT REFERENCES employees(id) ON DELETE CASCADE,
+  leave_type VARCHAR(100),
+  start_date DATE,
+  end_date DATE,
+  total_days NUMERIC,
+  reason TEXT,
+  status VARCHAR(50) DEFAULT 'pending',
+  approved_by INT,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- notifications
+CREATE TABLE IF NOT EXISTS notifications (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  type VARCHAR(100),
+  message TEXT,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT now()
+);
