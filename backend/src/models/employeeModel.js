@@ -1,10 +1,16 @@
-const db = require('../db');
+// src/models/employeeModel.js
+import db from "../db.js";
 
-const create = (data) => db('employees').insert(data).returning('*');
-const findAll = () => db('employees').select('*');
-const findById = (id) => db('employees').where({ id }).first();
-const findByUserId = (user_id) => db('employees').where({ user_id }).first();
-const updateById = (id, changes) => db('employees').where({ id }).update(changes).returning('*');
-const remove = (id) => db('employees').where({ id }).del();
+export const getAllEmployees = () => db("employees").select("*");
 
-module.exports = { create, findAll, findById, findByUserId, updateById, remove };
+export const getEmployeeById = (id) =>
+  db("employees").where({ id }).first();
+
+export const createEmployee = (employeeData) =>
+  db("employees").insert(employeeData).returning("*");
+
+export const updateEmployee = (id, employeeData) =>
+  db("employees").where({ id }).update(employeeData).returning("*");
+
+export const deleteEmployee = (id) =>
+  db("employees").where({ id }).del();

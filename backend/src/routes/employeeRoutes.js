@@ -1,29 +1,19 @@
-// backend/src/routes/employeeRoutes.js
+// src/routes/employeeRoutes.js
 import express from "express";
 import {
-  getAllEmployees,
-  getEmployeeById,
-  createEmployee,
-  updateEmployee,
-  deleteEmployee,
+  fetchEmployees,
+  fetchEmployee,
+  addEmployee,
+  editEmployee,
+  removeEmployee,
 } from "../controllers/employeeController.js";
-import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// ✅ GET all employees
-router.get("/", verifyToken, getAllEmployees);
-
-// ✅ GET employee by ID
-router.get("/:id", verifyToken, getEmployeeById);
-
-// ✅ CREATE new employee
-router.post("/", verifyToken, createEmployee);
-
-// ✅ UPDATE employee
-router.put("/:id", verifyToken, updateEmployee);
-
-// ✅ DELETE employee
-router.delete("/:id", verifyToken, deleteEmployee);
+router.get("/", fetchEmployees);
+router.get("/:id", fetchEmployee);
+router.post("/", addEmployee);
+router.put("/:id", editEmployee);
+router.delete("/:id", removeEmployee);
 
 export default router;
